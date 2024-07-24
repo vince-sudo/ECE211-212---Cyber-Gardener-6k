@@ -1,0 +1,34 @@
+ // define pin constants
+ // connect pin to relay module
+
+// setup function
+
+ void setup() {
+    // Initialize the digital pin as an output
+    pinMode(pumpPin, OUTPUT);
+    
+    // ensure the pump is off at the start
+    digitalWrite(pumpPin, HIGH); // HIGH means pump off (active-low)
+}
+
+// function to turn the pump on
+
+void turnPumpOn() {
+    digitalWrite(pumpPin, LOW); // LOW means pump on (active-low)
+}
+
+// function to turn the pump off
+void turnPumpOff() {
+    digitalWrite(pumpPin, HIGH); // HIGH means pump off (active-low)
+}
+
+// function to control the pump based on some condition
+void controlPump() {
+    // example condition: Turn pump on for 5 seconds, then off for 5 seconds
+}
+
+// loop function: runs repeatedly after setup() has finished
+void loop() {
+    // call the function to control the pump
+    controlPump();
+}
