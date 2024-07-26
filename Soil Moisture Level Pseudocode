@@ -1,0 +1,19 @@
+
+// Define all constants and pins
+
+const int sensorPin = A0; // Analog pin A0 for sensor input
+
+// Define thresholds for what is dry, moist and wet soil
+
+// Main function 
+  Initialize serial comms
+
+  Intialize output 
+
+// Function loop
+  Read value of sensor
+
+  Print sensor value to UI 
+
+  // Determine moisture level 
+
