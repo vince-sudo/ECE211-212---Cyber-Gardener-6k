@@ -1,0 +1,39 @@
+Moisture Sensor + Water Pump Program
+Description: the following Code acts as a way of connecting the functionality of an Analog soil Misture Sensor to activate or deactivate a water pump based on the percentage of Moisture in the soil.
+
+Code:
+// Define constants for moisture values
+const int AirValue = 520;   // Replace this value with Value_1
+const int WaterValue = 260; // Replace this value with Value_2
+
+int soilMoistureValue = 0;
+const int relayPin = 8;
+
+void setup() {
+  Serial.begin(9600); // Open serial port, set the baud rate to 9600 bps
+  pinMode(relayPin, OUTPUT);
+}
+
+void loop() {
+  soilMoistureValue = analogRead(A0);  // Read sensor value from analog pin A0
+
+  // Map the sensor value to a percentage (0% to 100%)
+  int moisturePercent = map(soilMoistureValue, WaterValue, AirValue, 100, 0);
+
+  // Ensure the percentage is within 0-100%
+  moisturePercent = constrain(moisturePercent, 0, 100);
+
+  // Print the moisture percentage to the serial monitor
+  Serial.print("Soil Moisture: ");
+  Serial.print(moisturePercent);
+  Serial.println("%");
+
+  // Control relay based on moisture percentage
+  if (moisturePercent < 58) {
+    digitalWrite(relayPin, LOW); // Activate relay
+  } else if (moisturePercent >= 62) {
+    digitalWrite(relayPin, HIGH); // Deactivate relay
+  }
+
+  delay(100); // Delay between readings
+}
