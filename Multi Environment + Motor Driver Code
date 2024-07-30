@@ -5,20 +5,20 @@ it would trigger the motor driver to activate a motor driver driving a DC motor 
 
 CODE:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#include <DFRobot_ENS160.h>        // ENS160 Sensor
-#include "DFRobot_BME280.h"        // BME280 Sensor
-#include <Wire.h>                  // I2C driver Library
+#include <DFRobot_ENS160.h>
+#include "DFRobot_BME280.h"
+#include <Wire.h>
 #include <Adafruit_MotorShield.h>  // Include the Adafruit Motor Shield library
 
 // Create an instance of the Motor Shield
 Adafruit_MotorShield motorShield = Adafruit_MotorShield(0x60); 
 
 // Create a motor object on the shield
-Adafruit_DCMotor *motor = motorShield.getMotor(4); // Get motor on M4 (you can change it to M1, M2, M3, M4)
+Adafruit_DCMotor *motor = motorShield.getMotor(1); // Get motor on M4 (you can change it to M1, M2, M3, M4)
 
 // Temperature range in Fahrenheit
 #define MIN_TEMP_F 55.0
-#define MAX_TEMP_F 70.0
+#define MAX_TEMP_F 80.0
 
 DFRobot_ENS160_I2C ENS160(&Wire, /*i2cAddr*/ 0x53);
 typedef DFRobot_BME280_IIC    BME;
