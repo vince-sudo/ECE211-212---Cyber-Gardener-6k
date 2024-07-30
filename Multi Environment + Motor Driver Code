@@ -18,7 +18,7 @@ Adafruit_DCMotor *motor = motorShield.getMotor(1); // Get motor on M4 (you can c
 
 // Temperature range in Fahrenheit
 #define MIN_TEMP_F 55.0
-#define MAX_TEMP_F 80.0
+#define MAX_TEMP_F 70.0
 
 DFRobot_ENS160_I2C ENS160(&Wire, /*i2cAddr*/ 0x53);
 typedef DFRobot_BME280_IIC    BME;
