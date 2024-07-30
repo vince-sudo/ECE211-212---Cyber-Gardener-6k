@@ -1,0 +1,121 @@
+The following Arduino Code represents the utilization of the Multi Environment Sensor as well as the Adafruit Motor Shield for driving DC motors.
+Description: This Code allows the readabiity of temperature and humidity through the Multi Environment Sensor, Depending on the trigger conditions (Temp between 55 - 70 degrees F) 
+it would trigger the motor driver to activate a motor driver driving a DC motor acting as a powerful fan.
+
+
+CODE:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#include <DFRobot_ENS160.h>        // ENS160 Sensor
+#include "DFRobot_BME280.h"        // BME280 Sensor
+#include <Wire.h>                  // I2C driver Library
+#include <Adafruit_MotorShield.h>  // Include the Adafruit Motor Shield library
+
+// Create an instance of the Motor Shield
+Adafruit_MotorShield motorShield = Adafruit_MotorShield(0x60); 
+
+// Create a motor object on the shield
+Adafruit_DCMotor *motor = motorShield.getMotor(4); // Get motor on M4 (you can change it to M1, M2, M3, M4)
+
+// Temperature range in Fahrenheit
+#define MIN_TEMP_F 55.0
+#define MAX_TEMP_F 70.0
+
+DFRobot_ENS160_I2C ENS160(&Wire, /*i2cAddr*/ 0x53);
+typedef DFRobot_BME280_IIC    BME;
+BME   bme(&Wire, 0x76);
+
+// Function to scan for I2C devices
+void i2cScan() {
+  byte error, address;
+  int nDevices;
+
+  Serial.println("Scanning...");
+
+  nDevices = 0;
+  for (address = 1; address < 127; address++) {
+    // The I2C address of the device
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+
+    if (error == 0) {
+      Serial.print("I2C device found at address 0x");
+      if (address < 16) 
+        Serial.print("0");
+      Serial.print(address, HEX);
+      Serial.println("  !");
+      nDevices++;
+    } else if (error == 4) {
+      Serial.print("Unknown error at address 0x");
+      if (address < 16) 
+        Serial.print("0");
+      Serial.println(address, HEX);
+    }
+  }
+  if (nDevices == 0) {
+    Serial.println("No I2C devices found");
+  } else {
+    Serial.println("done");
+  }
+}
+
+void setup(void)
+{
+  Serial.begin(9600);
+
+  // Scan for I2C devices
+  i2cScan();
+  
+  // Initialize BME280 sensor
+  bme.reset();
+  while(bme.begin() != BME::eStatusOK) {
+    Serial.println("BME280 begin failed");
+    delay(2000);
+  }
+  Serial.println("BME280 begin success");
+
+  // Initialize ENS160 sensor
+  while( NO_ERR != ENS160.begin() ){
+    Serial.println("ENS160 begin failed");
+    delay(3000);
+  }
+  Serial.println("ENS160 begin success");
+
+  // Set the temperature and humidity for ENS160 calibration
+  ENS160.setTempAndHum(/*temperature=*/bme.getTemperature(), /*humidity=*/bme.getHumidity());
+
+  // Initialize motor shield
+  motorShield.begin();
+}
+
+void loop()
+{
+  float tempC = bme.getTemperature();
+  float tempF = tempC * 9.0 / 5.0 + 32; // Convert Celsius to Fahrenheit
+  float humi = bme.getHumidity();
+
+  Serial.println();
+  Serial.println("======== Start Print ========");
+  Serial.print("Temperature (Fahrenheit): "); Serial.println(tempF);
+  Serial.print("Humidity (%): "); Serial.println(humi);
+
+  // Control the fan based on temperature
+  if (tempF < MIN_TEMP_F) {
+    Serial.println("Temperature below target range. Turning fan off.");
+    motor->setSpeed(0); // Turn off the motor
+    motor->run(RELEASE); // Release the motor (stop it)
+  }
+  else if (tempF > MAX_TEMP_F) {
+    Serial.println("Temperature above target range. Turning fan on.");
+    motor->setSpeed(255); // Turn on the motor at full speed
+    motor->run(FORWARD); // Run the motor forward (adjust as needed)
+  }
+  else {
+    Serial.println("Temperature within target range. Fan is off.");
+    motor->setSpeed(0); // Ensure motor is off
+    motor->run(RELEASE); // Release the motor (stop it)
+  }
+
+  Serial.println("======== End Print ========");
+  
+  delay(1000);
+}
