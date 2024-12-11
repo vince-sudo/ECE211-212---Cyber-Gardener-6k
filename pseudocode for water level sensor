@@ -1,0 +1,28 @@
+// Cyber-Gardener-6000 Pseudocode 
+
+Define and initialize variables and pin connections
+
+void setup() {
+    Initialize serial communication
+
+    Set pin modes
+
+    Initialize LED and buzzer to off state
+}
+
+void loop() {
+    Read the water level sensor value
+
+    Print the water level to the serial monitor
+
+    Check if the water level is below the threshold
+    if (waterLevel < lowWaterLevelThreshold) {
+        If water level is too low, turn on LED and buzzer
+        
+        Notify user via serial monitor
+    } 
+    else {
+         If water level is above the threshold, turn off LED and buzzer
+       }
+
+
